@@ -6,7 +6,8 @@ from inline_markdown import (
     extract_markdown_images,
     extract_markdown_links,
     split_nodes_image, 
-    split_nodes_link
+    split_nodes_link,
+    text_to_textnodes
 )
 from textnode import TextNode, TextType
 
@@ -123,7 +124,28 @@ class TestSplitNodes(unittest.TestCase):
         self.assertEqual(len(new_nodes), 1)
         self.assertEqual(new_nodes[0].text, "Just plain text")
 
+class TestTextToTextNodes(unittest.TestCase):
+    def test_full_markdown(self):
+        text = "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        nodes = text_to_textnodes(text)
+        expected = [
+            TextNode("This is ", TextType.TEXT_PLAIN),
+            TextNode("text", TextType.BOLD_TEXT),
+            TextNode(" with an ", TextType.TEXT_PLAIN),
+            TextNode("italic", TextType.ITALIC_TEXT),
+            TextNode(" word and a ", TextType.TEXT_PLAIN),
+            TextNode("code block", TextType.CODE_TEXT),
+            TextNode(" and an ", TextType.TEXT_PLAIN),
+            TextNode("obi wan image", TextType.IMAGE_TEXT, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", TextType.TEXT_PLAIN),
+            TextNode("link", TextType.LINK_TEXT, "https://boot.dev"),
+        ]
+        self.assertListEqual(nodes, expected)
 
+    def test_simple_text(self):
+        nodes = text_to_textnodes("Just some text")
+        self.assertEqual(len(nodes), 1)
+        self.assertEqual(nodes[0].text, "Just some text")
 
 if __name__ == "__main__":
     unittest.main()
