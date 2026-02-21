@@ -1,4 +1,6 @@
 import os
+
+
 from extract_title import extract_title
 # Assuming your markdown conversion logic is in src/markdown_blocks.py
 from markdown_blocks import markdown_to_html_node 
@@ -32,3 +34,27 @@ def generate_page(from_path, template_path, dest_path):
     # Write to file
     with open(dest_path, 'w') as f:
         f.write(full_html)
+
+import os
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    # Log what we are doing for debugging
+    print(f"Walking from {dir_path_content} to {dest_dir_path}")
+
+    # We list the CURRENT directory
+    for filename in os.listdir(dir_path_content):
+        from_path = os.path.join(dir_path_content, filename)
+        dest_path = os.path.join(dest_dir_path, filename)
+
+        # Check if the ITEM is a file
+        if os.path.isfile(from_path):
+            if filename.endswith(".md"):
+                # Logic to convert .md to .html path
+                # Use .replace or os.path.splitext
+                dest_html_path = dest_path.replace(".md", ".html")
+                generate_page(from_path, template_path, dest_html_path)
+        else:
+            # ONLY if it's a directory do we recurse
+            # Ensure the directory exists in public/
+            os.makedirs(dest_path, exist_ok=True)
+            generate_pages_recursive(from_path, template_path, dest_path)
