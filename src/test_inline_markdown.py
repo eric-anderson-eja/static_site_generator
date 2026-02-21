@@ -1,5 +1,6 @@
 import unittest
 import re
+from textnode import TextNode, TextType
 
 from inline_markdown import (
     split_nodes_delimiter,
@@ -9,7 +10,6 @@ from inline_markdown import (
     split_nodes_link,
     text_to_textnodes
 )
-from textnode import TextNode, TextType
 
 class TestInlineMarkdown(unittest.TestCase):
     def test_delim_bold(self):
@@ -78,8 +78,6 @@ class TestInlineMarkdown(unittest.TestCase):
         text = "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
         matches = extract_markdown_links(text)
         self.assertListEqual([("to boot dev", "https://www.boot.dev"), ("to youtube", "https://www.youtube.com/@bootdotdev")], matches)
-
-    import unittest
 
 class TestSplitNodes(unittest.TestCase):
     def test_split_image(self):

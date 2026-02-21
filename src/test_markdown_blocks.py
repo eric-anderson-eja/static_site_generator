@@ -1,5 +1,5 @@
 import unittest
-from markdown_blocks import block_to_block_type, markdown_to_blocks, BlockType
+from markdown_blocks import block_to_block_type, markdown_to_blocks, BlockType, markdown_to_html_node
 
 class TestMarkdownToBlocks(unittest.TestCase):
     def test_markdown_to_blocks(self):
@@ -42,11 +42,6 @@ This is a paragraph with too many newlines below it.
                 "- Item 1\n- Item 2",
             ],
         )
-
-import unittest
-# Assuming your code is in a file named block_markdown.py
-# from block_markdown import block_to_block_type, BlockType
-
 class TestBlockToBlockType(unittest.TestCase):
 
     def test_headings(self):
@@ -92,6 +87,79 @@ class TestBlockToBlockType(unittest.TestCase):
         para = "This is just a normal paragraph of text."
         self.assertEqual(block_to_block_type(para), BlockType.PARAGRAPH)
 
+class TestMarkdownToHTML(unittest.TestCase):
+    def test_paragraphs(self):
+        md = """
+This is **bolded** paragraph
+text in a p
+tag here
+
+This is another paragraph with _italic_ text and `code` here
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><p>This is <b>bolded</b> paragraph text in a p tag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>",
+        )
+
+    def test_codeblock(self):
+        md = "```\nThis is text that _should_ remain\nthe **same** even with inline stuff\n```"
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+
+        self.assertEqual(
+            html,
+            "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff</code></pre></div>",
+        )
+
+    def test_headings(self):
+        md = """
+# The Main Title
+
+### A smaller sub-heading
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><h1>The Main Title</h1><h3>A smaller sub-heading</h3></div>",
+        )
+
+    def test_mixed_lists(self):
+        md = """
+- First item
+- Second item with **bold**
+
+1. First ordered
+2. Second ordered
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        expected = (
+            "<div>"
+            "<ul><li>First item</li><li>Second item with <b>bold</b></li></ul>"
+            "<ol><li>First ordered</li><li>Second ordered</li></ol>"
+            "</div>"
+        )
+        self.assertEqual(html, expected)
+
+    def test_blockquote(self):
+        md = """
+> This is a quote
+> that spans two lines
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><blockquote>This is a quote that spans two lines</blockquote></div>",
+        )
+    def test_empty(self):
+        md = ""
+        node = markdown_to_html_node(md)
+        self.assertEqual(node.to_html(), "<div></div>")
 
 
 if __name__ == "__main__":

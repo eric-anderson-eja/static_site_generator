@@ -111,6 +111,7 @@ def text_to_textnodes(text):
     # Pass the list through each splitting function sequentially
     nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD_TEXT)
     nodes = split_nodes_delimiter(nodes, "*", TextType.ITALIC_TEXT)
+    nodes = split_nodes_delimiter(nodes, "_", TextType.ITALIC_TEXT)
     nodes = split_nodes_delimiter(nodes, "`", TextType.CODE_TEXT)
     nodes = split_nodes_image(nodes)
     nodes = split_nodes_link(nodes)
@@ -118,17 +119,3 @@ def text_to_textnodes(text):
     return nodes
 
 
-def markdown_to_blocks(markdown):
-    # Split the document by double newlines
-    raw_blocks = markdown.split("\n\n")
-    filtered_blocks = []
-    
-    for block in raw_blocks:
-        # Strip leading/trailing whitespace
-        cleaned_block = block.strip()
-        
-        # Only add to list if the block isn't empty
-        if cleaned_block != "":
-            filtered_blocks.append(cleaned_block)
-            
-    return filtered_blocks
