@@ -1,25 +1,27 @@
-from textnode import TextNode, TextType
-from copy_static import copy_files_recursive
 import os
 import shutil
+from textnode import TextNode, TextType
+from copy_static import copy_files_recursive
+from generate_page import generate_page
 
 
 def main():
-    node = TextNode("This is a text node", TextType.BOLD_TEXT, "https://www.boot.dev")
-    print(node)
-    source_path = "./static"
-    dest_path = "./public"
+    static_path = "./static"
+    public_path = "./public"
+    content_path = "./content/index.md"
+    template_path = "./template.html"
+    output_path = "./public/index.html"
 
-    print("Cleaning up public directory...")
-    if os.path.exists(dest_path):
-        shutil.rmtree(dest_path)
+    if os.path.exists(public_path):
+        shutil.rmtree(public_path)
+    os.mkdir(public_path)
     
-    print("Creating public directory...")
-    os.mkdir(dest_path)
+    print("Copying static files...")
+    copy_files_recursive(static_path, public_path)
 
-    print("Copying static files to public directory...")
-    copy_files_recursive(source_path, dest_path)
 
+    print("Generating index page...")
+    generate_page(content_path, template_path, output_path)
 
 
 
