@@ -116,3 +116,19 @@ def text_to_textnodes(text):
     nodes = split_nodes_link(nodes)
     
     return nodes
+
+
+def markdown_to_blocks(markdown):
+    # Split the document by double newlines
+    raw_blocks = markdown.split("\n\n")
+    filtered_blocks = []
+    
+    for block in raw_blocks:
+        # Strip leading/trailing whitespace
+        cleaned_block = block.strip()
+        
+        # Only add to list if the block isn't empty
+        if cleaned_block != "":
+            filtered_blocks.append(cleaned_block)
+            
+    return filtered_blocks

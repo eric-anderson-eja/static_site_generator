@@ -147,5 +147,6 @@ class TestTextToTextNodes(unittest.TestCase):
         self.assertEqual(len(nodes), 1)
         self.assertEqual(nodes[0].text, "Just some text")
 
+
 if __name__ == "__main__":
     unittest.main()
